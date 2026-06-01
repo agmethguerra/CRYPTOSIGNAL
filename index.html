@@ -2,368 +2,215 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-  <meta name="theme-color" content="#070a0d"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="description" content="CryptoSignal — Señales de trading en tiempo real"/>
-  <title>CryptoSignal</title>
-
-  <!-- Fonts -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoSignal — Tu asistente de trading</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/main.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+  <link rel="stylesheet" href="./css/style.css"/>
 </head>
 <body>
 
-  <!-- Access key (injected at deploy) -->
-  <script>const ACCESS_KEY_HASH = "28467e3b65605b885f22ec6a72716433aae3b688d1e19bc5dd4f6b3073957002";</script>
-
-  <!-- ══ LOGIN ══════════════════════════════════════ -->
-  <div id="loginView" class="view active">
-    <div class="lg-grid"></div>
-    <div class="lg-glow"></div>
-    <div class="lg-box">
-      <div class="lg-logo">⬡ CryptoSignal</div>
-      <div class="lg-sub">Mercado en tiempo real · Acceso privado</div>
-      <div class="fld">
-        <div class="fld-lbl">Clave de acceso</div>
-        <input type="password" id="loginKey" placeholder="••••••••••••"
-               autocomplete="off" spellcheck="false" inputmode="text"/>
+  <!-- LOGIN SCREEN -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-brand">
+        <i class="bi bi-graph-up-arrow"></i>
+        <span>CryptoSignal</span>
       </div>
-      <button class="btn-primary" id="loginBtn" onclick="doLogin()">Verificar acceso</button>
-      <div class="lg-err" id="loginErr"></div>
+      <p class="login-subtitle">Ingresa tu clave para continuar</p>
+      <div class="login-field" id="loginField">
+        <i class="bi bi-lock login-field-icon"></i>
+        <input
+          type="password"
+          id="loginInput"
+          class="login-input"
+          placeholder="Contrasena"
+          autocomplete="current-password"
+          maxlength="64"
+        />
+        <button class="login-eye" id="loginEye" type="button" title="Mostrar/ocultar">
+          <i class="bi bi-eye" id="loginEyeIcon"></i>
+        </button>
+      </div>
+      <div class="login-error" id="loginError">Clave incorrecta. Intentalo de nuevo.</div>
+      <button class="login-btn" id="loginBtn" type="button">
+        <i class="bi bi-box-arrow-in-right"></i>
+        Entrar
+      </button>
     </div>
   </div>
 
-  <!-- ══ APP ════════════════════════════════════════ -->
-  <div id="appView" class="view">
-
-    <header class="topbar">
-      <div class="tb-logo">⬡ CryptoSignal</div>
-      <div class="tb-right">
-        <div class="live-pill"><div class="live-dot"></div>LIVE</div>
-        <div id="cdRing" style="font-size:10px;color:var(--muted);min-width:28px;text-align:center">—</div>
-        <button class="btn-sm" onclick="doLogout()">Salir</button>
-      </div>
-    </header>
-
-    <!-- Active entry sticky bar -->
-    <div class="aeb" id="aeb">
-      <div class="aeb-chip">
-        <div class="aeb-lbl">Par</div>
-        <div class="aeb-val" id="aebSym">—</div>
-      </div>
-      <div class="aeb-sep">|</div>
-      <div class="aeb-chip">
-        <div class="aeb-lbl">Tipo</div>
-        <div class="aeb-val" id="aebType">—</div>
-      </div>
-      <div class="aeb-sep">|</div>
-      <div class="aeb-chip">
-        <div class="aeb-lbl">Entrada</div>
-        <div class="aeb-val" id="aebEntry">—</div>
-      </div>
-      <div class="aeb-chip">
-        <div class="aeb-lbl">TP</div>
-        <div class="aeb-val" style="color:var(--blue)" id="aebTp">—</div>
-      </div>
-      <div class="aeb-chip">
-        <div class="aeb-lbl">SL</div>
-        <div class="aeb-val" style="color:var(--red)" id="aebSl">—</div>
-      </div>
-      <div class="aeb-chip">
-        <div class="aeb-lbl">Estado</div>
-        <div class="aeb-val" style="color:var(--amber);font-size:11px" id="aebState">esperando TP/SL</div>
-      </div>
-      <button class="aeb-cancel" onclick="cancelEntry()">✕</button>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="bi bi-graph-up-arrow brand-icon"></i>
+      <span class="brand-name">CryptoSignal</span>
     </div>
 
-    <div class="content">
+    <div class="nav-coins" id="navCoins">
+      <!-- populated by JS -->
+    </div>
 
-      <!-- Symbol tabs -->
-      <div class="sym-scroll">
-        <div class="sym-row" id="symRow">
-          <button class="sym-tab on" data-sym="BTCUSDT">₿ BTC</button>
-          <button class="sym-tab" data-sym="ETHUSDT">Ξ ETH</button>
-          <button class="sym-tab" data-sym="SOLUSDT">◎ SOL</button>
-          <button class="sym-tab" data-sym="BNBUSDT">◈ BNB</button>
-          <button class="sym-tab" data-sym="XRPUSDT">✕ XRP</button>
-          <button class="sym-tab" data-sym="DOGEUSDT">Ð DOGE</button>
-        </div>
+    <div class="nav-right">
+      <div class="nav-status">
+        <span class="live-dot" id="liveDot"></span>
+        <span class="live-label" id="liveLabel">conectando...</span>
       </div>
+    </div>
+  </nav>
 
-      <!-- Timeframe tabs -->
-      <div class="tf-row" id="tfRow">
-        <button class="tf-tab on" data-tf="1m">1m</button>
-        <button class="tf-tab" data-tf="5m">5m</button>
-        <button class="tf-tab" data-tf="15m">15m</button>
-        <button class="tf-tab" data-tf="1h">1h</button>
-        <button class="tf-tab" data-tf="4h">4h</button>
-      </div>
+  <!-- MAIN LAYOUT -->
+  <main class="app-layout">
 
-      <!-- Price hero -->
-      <div class="card" id="priceCard">
-        <div class="price-hero">
-          <div class="price-big" id="mPrice">—</div>
-          <span class="price-chg" id="mChg">—</span>
-        </div>
-        <div class="ohlc-row">
-          <div class="ohlc-item">
-            <div class="ohlc-lbl">Open</div>
-            <div class="ohlc-val" id="mOpen">—</div>
+    <!-- LEFT: Chart -->
+    <section class="chart-section">
+      <div class="chart-header">
+        <div class="chart-title-group">
+          <div class="chart-coin-info">
+            <h1 class="chart-symbol" id="chartSymbol">BTC / USDT</h1>
+            <span class="chart-coin-name" id="chartCoinName">Bitcoin</span>
           </div>
-          <div class="ohlc-item">
-            <div class="ohlc-lbl" style="color:var(--green)">High</div>
-            <div class="ohlc-val" style="color:var(--green)" id="mHigh">—</div>
-          </div>
-          <div class="ohlc-item">
-            <div class="ohlc-lbl" style="color:var(--red)">Low</div>
-            <div class="ohlc-val" style="color:var(--red)" id="mLow">—</div>
-          </div>
-          <div class="ohlc-item">
-            <div class="ohlc-lbl">Vol 24h</div>
-            <div class="ohlc-val" id="mVol">—</div>
+          <div class="chart-price-group">
+            <span class="chart-price" id="chartPrice">—</span>
+            <span class="chart-change" id="chartChange">—</span>
           </div>
         </div>
-      </div>
-
-      <!-- Metrics -->
-      <div class="metrics-grid">
-        <div class="metric">
-          <div class="m-lbl">RSI (14)</div>
-          <div class="m-val" id="mRsi">—</div>
-          <div class="bar-wrap"><div class="bar-fill" id="rsiFill" style="width:50%;background:var(--muted)"></div></div>
-        </div>
-        <div class="metric">
-          <div class="m-lbl">ATR · Volatilidad</div>
-          <div class="m-val" id="mAtr">—</div>
-          <div class="bar-wrap"><div class="bar-fill" id="atrFill" style="width:0%;background:var(--blue)"></div></div>
-        </div>
-        <div class="metric" id="sigCard">
-          <div class="m-lbl">Señal</div>
-          <div class="m-val" id="mSig">—</div>
-          <div class="m-sub" id="mSigSub">—</div>
-        </div>
-        <div class="metric">
-          <div class="m-lbl">Score técnico</div>
-          <div class="m-val" id="mScore">—</div>
-          <div class="m-sub">de 6 puntos</div>
-        </div>
-        <div class="metric">
-          <div class="m-lbl">Ratio R/R</div>
-          <div class="m-val" id="mRr">—</div>
-          <div class="m-sub" id="mRrSub">—</div>
+        <div class="chart-meta-group">
+          <div class="chart-meta-item">
+            <span class="meta-label">Máx 24h</span>
+            <span class="meta-val up" id="metaHigh">—</span>
+          </div>
+          <div class="chart-meta-item">
+            <span class="meta-label">Mín 24h</span>
+            <span class="meta-val down" id="metaLow">—</span>
+          </div>
+          <div class="chart-meta-item">
+            <span class="meta-label">Volumen</span>
+            <span class="meta-val" id="metaVol">—</span>
+          </div>
+          <!-- Timeframe selector -->
+          <div class="tf-selector" id="tfSelector">
+            <button class="tf-btn" data-tf="1m">1m</button>
+            <button class="tf-btn" data-tf="5m">5m</button>
+            <button class="tf-btn" data-tf="15m">15m</button>
+            <button class="tf-btn active" data-tf="1h">1h</button>
+            <button class="tf-btn" data-tf="4h">4h</button>
+            <button class="tf-btn" data-tf="1d">1D</button>
+          </div>
         </div>
       </div>
 
-      <!-- Candle chart -->
-      <div class="card">
-        <div class="card-title">
-          Velas — <span id="chartLbl">—</span>
-          <span style="margin-left:auto;font-size:9px;color:var(--muted)" id="chartTs">—</span>
+      <div class="chart-container" id="chartContainer"></div>
+
+      <div class="chart-footer">
+        <span class="footer-note">
+          <i class="bi bi-reception-4"></i>
+          Datos en tiempo real via Binance &middot; velas de <span id="footerTf">1h</span> &middot; últimas <span id="footerKlines">100</span> velas
+        </span>
+        <span class="footer-time" id="footerTime">—</span>
+      </div>
+    </section>
+
+    <!-- RIGHT: Signal Panel -->
+    <aside class="signal-section">
+
+      <!-- BIG SIGNAL BUTTON -->
+      <div class="signal-button-wrap">
+        <div class="signal-button loading" id="signalButton">
+          <div class="signal-pulse" id="signalPulse"></div>
+          <div class="signal-direction-icon" id="signalDirIcon">
+            <i class="bi bi-arrow-repeat" id="signalBiIcon"></i>
+          </div>
+          <div class="signal-action" id="signalAction">ANALIZANDO</div>
+          <div class="signal-timing" id="signalTiming"></div>
+          <div class="signal-subtitle" id="signalSubtitle">Cargando datos del mercado...</div>
+          <div class="signal-updated" id="signalUpdated"></div>
         </div>
-        <div class="ohlc-info">
-          <span style="color:var(--muted)">O:<b id="ciO">—</b></span>
-          <span style="color:var(--green)">H:<b id="ciH">—</b></span>
-          <span style="color:var(--red)">L:<b id="ciL">—</b></span>
-          <span>C:<b id="ciC">—</b></span>
-        </div>
-        <div class="chart-wrap main-chart" style="height:240px"><canvas id="cMain"></canvas></div>
       </div>
 
-      <!-- RSI + Bollinger -->
-      <div class="chart2col">
-        <div class="card">
-          <div class="card-title">RSI</div>
-          <div class="chart-wrap" style="height:120px"><canvas id="cRsi"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Bollinger</div>
-          <div class="chart-wrap" style="height:120px"><canvas id="cBol"></canvas></div>
-        </div>
-      </div>
-
-      <!-- Signal levels + Entry button -->
-      <div class="card">
-        <div class="card-title">Niveles de operación</div>
-        <div class="level-row">
-          <div class="lv-icon lv-m">→</div>
-          <div style="flex:1"><div class="lv-lbl">Entrada</div><div class="lv-val" id="lEntry">—</div></div>
-          <span id="lBadge" class="badge b-hold">HOLD</span>
+      <!-- TP / SL -->
+      <div class="levels-card" id="levelsCard">
+        <div class="levels-header">
+          <i class="bi bi-bullseye"></i>
+          Niveles clave de precio
         </div>
         <div class="level-row">
-          <div class="lv-icon lv-b">⊕</div>
-          <div style="flex:1"><div class="lv-lbl">Take Profit</div><div class="lv-val" style="color:var(--blue)" id="lTp">—</div></div>
-          <span id="lTpPct" class="badge b-hold">—</span>
-        </div>
-        <div class="level-row">
-          <div class="lv-icon lv-r">⊗</div>
-          <div style="flex:1"><div class="lv-lbl">Stop Loss</div><div class="lv-val" style="color:var(--red)" id="lSl">—</div></div>
-          <span id="lSlPct" class="badge b-sell">—</span>
-        </div>
-        <div class="level-row">
-          <div class="lv-icon lv-m">≈</div>
-          <div style="flex:1"><div class="lv-lbl">R/R</div><div class="lv-val" id="lRr">—</div></div>
-        </div>
-
-        <!-- Analysis reasons -->
-        <div id="reasonBox" style="margin-top:.6rem"></div>
-        <div class="score-row">
-          <span class="score-lbl">Score</span>
-          <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:50%;background:var(--muted)"></div></div>
-          <span class="score-num" id="scoreVal">—</span>
-        </div>
-
-        <!-- Entry zone -->
-        <div class="entry-zone" id="entryZone">
-          <div class="ez-header">
-            <span class="ez-pill idle" id="ezPill">SIN SEÑAL</span>
-            <span class="ez-desc" id="ezDesc">Esperando señal clara (score ≥ 3)...</span>
-            <div class="ez-dots" id="ezDots">
-              <div class="ez-dot"></div><div class="ez-dot"></div><div class="ez-dot"></div>
-              <div class="ez-dot"></div><div class="ez-dot"></div><div class="ez-dot"></div>
+          <div class="level-box tp-box">
+            <div class="level-label-top">
+              <i class="bi bi-arrow-up-circle-fill"></i>
+              Tomar ganancias
             </div>
+            <div class="level-price" id="tpPrice">—</div>
+            <div class="level-pct" id="tpPct">—</div>
+            <div class="level-hint">Precio donde conviene salir con ganancias</div>
           </div>
-          <div class="ez-levels">
-            <div class="ez-lv">
-              <div class="ez-lv-lbl">Entrada</div>
-              <div class="ez-lv-val" id="ezEntry">—</div>
+          <div class="level-box sl-box">
+            <div class="level-label-top">
+              <i class="bi bi-shield-fill-x"></i>
+              Cortar pérdida
             </div>
-            <div class="ez-lv">
-              <div class="ez-lv-lbl" style="color:var(--blue)">TP</div>
-              <div class="ez-lv-val" style="color:var(--blue)" id="ezTp">—</div>
-            </div>
-            <div class="ez-lv">
-              <div class="ez-lv-lbl" style="color:var(--red)">SL</div>
-              <div class="ez-lv-val" style="color:var(--red)" id="ezSl">—</div>
-            </div>
-          </div>
-          <button class="btn-entry idle" id="entryBtn" disabled onclick="confirmEntry()">
-            <span id="entryBtnTxt">⊘ Sin señal suficiente</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Accuracy module -->
-      <div class="sec-label">Precisión de predicciones</div>
-      <div class="card">
-        <div class="acc-wrap">
-          <div class="acc-ring-wrap">
-            <svg class="acc-ring" viewBox="0 0 100 100">
-              <circle class="acc-ring-bg"   cx="50" cy="50" r="42"/>
-              <circle class="acc-ring-fill" cx="50" cy="50" r="42" id="accRing"/>
-            </svg>
-            <div class="acc-ring-lbl">
-              <div class="acc-pct" id="accPct">--</div>
-              <div class="acc-sub">precisión</div>
-            </div>
-          </div>
-          <div class="acc-stats">
-            <div class="acc-counters">
-              <div class="acc-cnt">
-                <div class="acc-cnt-v" id="accTotal">0</div>
-                <div class="acc-cnt-l">evaluadas</div>
-              </div>
-              <div class="acc-cnt g">
-                <div class="acc-cnt-v" style="color:var(--green)" id="accHit">0</div>
-                <div class="acc-cnt-l">acertadas</div>
-              </div>
-              <div class="acc-cnt r">
-                <div class="acc-cnt-v" style="color:var(--red)" id="accMiss">0</div>
-                <div class="acc-cnt-l">fallidas</div>
-              </div>
-              <div class="acc-cnt a">
-                <div class="acc-cnt-v" style="color:var(--amber)" id="accPend">0</div>
-                <div class="acc-cnt-l">activas</div>
-              </div>
-            </div>
-            <div class="acc-verdict" id="accVerdict">
-              <div class="acc-vico" id="accVico">◈</div>
-              <div class="acc-vtxt" id="accVtxt">Confirma entradas BUY/SELL. El resultado se registra cuando el precio toca TP o SL.</div>
-            </div>
-            <div class="acc-conf-row">
-              <span class="acc-conf-lbl">Confianza</span>
-              <div class="acc-conf-track">
-                <div class="acc-conf-fill" id="accConf" style="width:0%"></div>
-                <div class="acc-conf-thr"></div>
-              </div>
-              <span class="acc-conf-val" id="accConfVal">--</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Verifications table -->
-        <div style="margin-top:1rem">
-          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Verificaciones</div>
-          <div class="tbl-scroll">
-            <table class="tbl">
-              <thead>
-                <tr>
-                  <th>Hora</th><th>Par</th><th>Tipo</th><th>Entrada</th>
-                  <th>Precio cierre</th><th>Resultado</th><th>TP · SL</th>
-                </tr>
-              </thead>
-              <tbody id="accBody">
-                <tr><td colspan="7" style="color:var(--muted);text-align:center;padding:1rem">Confirma una entrada para iniciar el seguimiento.</td></tr>
-              </tbody>
-            </table>
+            <div class="level-price" id="slPrice">—</div>
+            <div class="level-pct" id="slPct">—</div>
+            <div class="level-hint">Precio donde deberías salir para no perder más</div>
           </div>
         </div>
       </div>
 
-      <!-- Forex -->
-      <div class="sec-label">Mercado de Divisas</div>
-      <div class="fx-grid" id="fxGrid"></div>
-      <div class="card">
-        <div class="card-title">
-          Forex — <span id="fxLbl">USD/EUR</span>
-          <span style="margin-left:auto;font-size:9px;color:var(--muted)" id="fxTs">—</span>
+      <!-- CONFIDENCE -->
+      <div class="confidence-card">
+        <div class="conf-header">
+          <span class="conf-title">
+            <i class="bi bi-bar-chart-line"></i>
+            Fiabilidad de la señal
+          </span>
+          <span class="conf-value" id="confValue">—</span>
         </div>
-        <div class="chart-wrap" style="height:160px"><canvas id="cFx"></canvas></div>
+        <div class="conf-bar-bg">
+          <div class="conf-bar-fill" id="confBar" style="width:0%"></div>
+        </div>
+        <div class="conf-desc" id="confDesc">Calculando...</div>
       </div>
 
-      <!-- Signal history -->
-      <div class="sec-label">Historial de señales</div>
-      <div class="card">
-        <div class="tbl-scroll">
-          <table class="tbl">
-            <thead>
-              <tr><th>Hora</th><th>Par</th><th>Señal</th><th>Entrada</th><th>TP</th><th>SL</th><th>R/R</th></tr>
-            </thead>
-            <tbody id="histBody">
-              <tr><td colspan="7" style="color:var(--muted);text-align:center;padding:1rem">Sin señales aún.</td></tr>
-            </tbody>
-          </table>
+      <!-- INDICATORS -->
+      <div class="indicators-card">
+        <div class="ind-title">
+          <i class="bi bi-activity"></i>
+          Por que esta señal
+        </div>
+        <div class="indicators-list" id="indicatorsList"></div>
+      </div>
+
+      <!-- 48H SUMMARY -->
+      <div class="summary-card">
+        <div class="summary-title">
+          <i class="bi bi-calendar2-range"></i>
+          Resumen ultimas 48 horas
+        </div>
+        <div class="summary-body" id="summaryBody">
+          <div class="summary-skeleton">Cargando análisis...</div>
         </div>
       </div>
 
-      <!-- System log -->
-      <div class="sec-label">Log del sistema</div>
-      <div class="card"><div id="logBox"></div></div>
-
-      <div class="disclaimer">
-        Binance API (crypto) · open.er-api.com (forex) · Solo informativo. No es asesoría financiera.
+      <!-- MARKET SESSION -->
+      <div class="session-card">
+        <div class="session-title">
+          <i class="bi bi-clock-history"></i>
+          Sesiones de mercado
+        </div>
+        <div class="sessions-list" id="sessionsList"></div>
       </div>
-    </div><!-- /content -->
-  </div><!-- /appView -->
 
-  <!-- Toast -->
-  <div class="toast" id="toast">
-    <div class="toast-ico" id="toastIco">✓</div>
-    <div id="toastMsg">—</div>
-  </div>
+      <!-- DISCLAIMER -->
+      <p class="disclaimer">
+        <i class="bi bi-exclamation-triangle"></i>
+        Esta herramienta es educativa. No es asesoramiento financiero. Nunca inviertas más de lo que puedas perder.
+      </p>
 
-  <!-- ══ Scripts (order matters) ══════════════════ -->
-  <script src="js/utils.js"></script>
-  <script src="js/indicators.js"></script>
-  <script src="js/charts.js"></script>
-  <script src="js/accuracy.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/auth.js"></script>
+    </aside>
+  </main>
 
+  <script src="./js/app.js"></script>
 </body>
 </html>

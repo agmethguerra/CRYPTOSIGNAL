@@ -554,22 +554,26 @@ function initChart() {
 
   const isMobile = window.innerWidth <= 600;
 
+  // Ensure container has real dimensions before passing to LightweightCharts
+  const W = container.clientWidth  || container.offsetWidth  || window.innerWidth;
+  const H = container.clientHeight || container.offsetHeight || (isMobile ? 180 : 400);
+
   state.chart = LightweightCharts.createChart(container, {
-    width:  container.clientWidth,
-    height: container.clientHeight,
-    layout: { background: { color: '#07090e' }, textColor: '#5e708a' },
-    grid:   { vertLines: { color: '#101520' }, horzLines: { color: '#101520' } },
+    width:  W,
+    height: H,
+    layout: { background: { color: '#050a07' }, textColor: '#4d7a5c' },
+    grid:   { vertLines: { color: '#0b1410' }, horzLines: { color: '#0b1410' } },
     crosshair: {
       mode:     isMobile ? 1 : 0,
-      vertLine: { color: '#4d78d440' },
-      horzLine: { color: '#4d78d440' },
+      vertLine: { color: '#00d08425' },
+      horzLine: { color: '#00d08425' },
     },
     rightPriceScale: {
-      borderColor: '#1a2235',
+      borderColor: '#1a2e20',
       scaleMargins: { top: 0.08, bottom: 0.08 },
     },
     timeScale: {
-      borderColor:     '#1a2235',
+      borderColor:     '#1a2e20',
       timeVisible:     true,
       secondsVisible:  false,
       fixLeftEdge:     false,
@@ -585,13 +589,13 @@ function initChart() {
     downColor:       '#ff4560',
     borderUpColor:   '#00d084',
     borderDownColor: '#ff4560',
-    wickUpColor:     '#00d08460',
-    wickDownColor:   '#ff456060',
+    wickUpColor:     '#00d08445',
+    wickDownColor:   '#ff456045',
   });
 
   // EMA9 line
   state.ema9Series = state.chart.addLineSeries({
-    color:            '#f5a62390',
+    color:            '#f5a62370',
     lineWidth:        1,
     lineStyle:        0,
     priceLineVisible: false,
@@ -600,15 +604,22 @@ function initChart() {
 
   // EMA21 line
   state.ema21Series = state.chart.addLineSeries({
-    color:            '#4d78d490',
+    color:            '#2d8bff60',
     lineWidth:        1,
     lineStyle:        0,
     priceLineVisible: false,
     lastValueVisible: false,
   });
 
-  const ro = new ResizeObserver(() => {
-    if (state.chart) state.chart.resize(container.clientWidth, container.clientHeight);
+  const ro = new ResizeObserver(entries => {
+    if (!state.chart) return;
+    for (const entry of entries) {
+      const w = entry.contentRect.width;
+      const h = entry.contentRect.height;
+      if (w > 0 && h > 0) {
+        state.chart.resize(w, h);
+      }
+    }
   });
   ro.observe(container);
 }
@@ -1029,5 +1040,10 @@ async function init() {
 window.selectCoin = selectCoin;
 document.addEventListener('DOMContentLoaded', () => {
   initLogin();
-  init();
+  // Small defer so CSS layout finishes before chart measures container
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      init();
+    });
+  });
 });

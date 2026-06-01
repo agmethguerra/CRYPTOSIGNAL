@@ -3,241 +3,256 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <meta name="theme-color" content="#07090e"/>
+  <meta name="theme-color" content="#050a07"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <title>CryptoSignal — Tu asistente de trading</title>
+  <title>CryptoSignal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
   <link rel="stylesheet" href="./css/style.css"/>
 </head>
 <body>
 
-  <!-- ══ LOGIN ════════════════════════════════════════ -->
-  <div class="login-overlay" id="loginOverlay">
-    <div class="login-card">
+<!-- ══ LOGIN ════════════════════════════════════════════ -->
+<div class="login-overlay" id="loginOverlay">
 
-      <!-- Icon -->
-      <div class="login-icon-wrap">
-        <i class="bi bi-graph-up-arrow"></i>
-      </div>
-
-      <!-- Brand -->
-      <div class="login-brand">CryptoSignal</div>
-      <div class="login-tagline">Mercados · Análisis · Tiempo real</div>
-
-      <div class="login-divider"></div>
-
-      <!-- Field -->
-      <div class="login-field-label">Clave de acceso</div>
-      <div class="login-field" id="loginField">
-        <i class="bi bi-lock login-field-icon"></i>
-        <input
-          type="password"
-          id="loginInput"
-          class="login-input"
-          placeholder="Ingresa tu clave"
-          autocomplete="current-password"
-          maxlength="64"
-        />
-        <button class="login-eye" id="loginEye" type="button" title="Mostrar/ocultar">
-          <i class="bi bi-eye" id="loginEyeIcon"></i>
-        </button>
-      </div>
-
-      <div class="login-error" id="loginError">Clave incorrecta. Inténtalo de nuevo.</div>
-
-      <button class="login-btn" id="loginBtn" type="button">
-        <i class="bi bi-box-arrow-in-right"></i>
-        Entrar
-      </button>
-
-      <!-- Decorative dots -->
-      <div class="login-dots">
-        <div class="login-dot"></div>
-        <div class="login-dot"></div>
-        <div class="login-dot"></div>
-        <div class="login-dot"></div>
-        <div class="login-dot"></div>
-      </div>
-
-    </div>
+  <!-- Ambient particles -->
+  <div class="lp-bg">
+    <div class="lp-grid"></div>
+    <div class="lp-glow lp-glow--tl"></div>
+    <div class="lp-glow lp-glow--br"></div>
+    <div class="lp-scanline"></div>
   </div>
 
-  <!-- ══ NAVBAR ════════════════════════════════════════ -->
-  <nav class="navbar">
-    <div class="nav-brand">
-      <i class="bi bi-graph-up-arrow brand-icon"></i>
-      <span class="brand-name">CryptoSignal</span>
+  <div class="login-card">
+
+    <!-- Logo mark -->
+    <div class="lc-logo">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="14" fill="#00d084" fill-opacity="0.10"/>
+        <rect x="0.5" y="0.5" width="47" height="47" rx="13.5" stroke="#00d084" stroke-opacity="0.35"/>
+        <!-- candlestick bars -->
+        <rect x="11" y="22" width="5" height="14" rx="1.5" fill="#00d084" fill-opacity="0.9"/>
+        <line x1="13.5" y1="18" x2="13.5" y2="22" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="13.5" y1="36" x2="13.5" y2="39" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="21.5" y="16" width="5" height="10" rx="1.5" fill="#00d084"/>
+        <line x1="24" y1="11" x2="24" y2="16" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="24" y1="26" x2="24" y2="30" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="32" y="20" width="5" height="16" rx="1.5" fill="#00d084" fill-opacity="0.7"/>
+        <line x1="34.5" y1="15" x2="34.5" y2="20" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="34.5" y1="36" x2="34.5" y2="40" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- trend arrow -->
+        <path d="M10 31 L20 23 L28 27 L39 15" stroke="#00d084" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 2" opacity="0.5"/>
+      </svg>
+      <div class="lc-pulse-ring"></div>
     </div>
 
-    <div class="nav-coins" id="navCoins">
-      <!-- populated by JS -->
+    <!-- Brand text -->
+    <div class="lc-brand">CryptoSignal</div>
+    <div class="lc-tagline">
+      <span class="lc-tag-dot"></span>
+      <span>EN VIVO</span>
+      <span class="lc-tag-sep">·</span>
+      <span>MERCADOS · ANÁLISIS · SEÑALES</span>
     </div>
 
-    <div class="nav-right">
-      <div class="nav-status">
-        <span class="live-dot" id="liveDot"></span>
-        <span class="live-label" id="liveLabel">conectando...</span>
-      </div>
-      <button class="btn-logout" id="btnLogout" onclick="doLogout()" title="Cerrar sesión">
-        <i class="bi bi-box-arrow-right"></i>
-        <span>Salir</span>
+    <!-- Divider -->
+    <div class="lc-divider">
+      <span></span><span class="lc-divider-txt">ACCESO PRIVADO</span><span></span>
+    </div>
+
+    <!-- Input -->
+    <div class="lc-field-wrap" id="loginField">
+      <i class="bi bi-shield-lock lc-field-icon"></i>
+      <input
+        type="password"
+        id="loginInput"
+        class="lc-input"
+        placeholder="Ingresa tu clave de acceso"
+        autocomplete="current-password"
+        maxlength="64"
+      />
+      <button class="lc-eye" id="loginEye" type="button" aria-label="Mostrar/ocultar">
+        <i class="bi bi-eye" id="loginEyeIcon"></i>
       </button>
     </div>
-  </nav>
 
-  <!-- ══ MAIN LAYOUT ════════════════════════════════════ -->
-  <main class="app-layout">
+    <!-- Error -->
+    <div class="lc-error" id="loginError">
+      <i class="bi bi-exclamation-circle"></i>
+      Clave incorrecta. Inténtalo de nuevo.
+    </div>
 
-    <!-- LEFT: Chart -->
-    <section class="chart-section">
-      <div class="chart-header">
-        <div class="chart-title-group">
-          <div class="chart-coin-info">
-            <h1 class="chart-symbol" id="chartSymbol">BTC / USDT</h1>
-            <span class="chart-coin-name" id="chartCoinName">Bitcoin</span>
-          </div>
-          <div class="chart-price-group">
-            <span class="chart-price" id="chartPrice">—</span>
-            <span class="chart-change" id="chartChange">—</span>
-          </div>
+    <!-- Submit -->
+    <button class="lc-btn" id="loginBtn" type="button">
+      <span class="lc-btn-txt">Verificar acceso</span>
+      <span class="lc-btn-arrow"><i class="bi bi-arrow-right-circle"></i></span>
+    </button>
+
+    <!-- Footer note -->
+    <p class="lc-footer">Plataforma privada · Solo uso autorizado</p>
+
+  </div>
+</div>
+
+<!-- ══ NAVBAR ═════════════════════════════════════════════ -->
+<nav class="navbar">
+
+  <!-- Logo -->
+  <div class="nav-brand">
+    <svg class="nav-logo-svg" width="26" height="26" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" rx="12" fill="#00d084" fill-opacity="0.12"/>
+      <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#00d084" stroke-opacity="0.4"/>
+      <rect x="11" y="22" width="5" height="14" rx="1.5" fill="#00d084" fill-opacity="0.9"/>
+      <line x1="13.5" y1="18" x2="13.5" y2="22" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="13.5" y1="36" x2="13.5" y2="39" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+      <rect x="21.5" y="16" width="5" height="10" rx="1.5" fill="#00d084"/>
+      <line x1="24" y1="11" x2="24" y2="16" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="24" y1="26" x2="24" y2="30" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+      <rect x="32" y="20" width="5" height="16" rx="1.5" fill="#00d084" fill-opacity="0.7"/>
+      <line x1="34.5" y1="15" x2="34.5" y2="20" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="34.5" y1="36" x2="34.5" y2="40" stroke="#00d084" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span class="brand-name">CryptoSignal</span>
+  </div>
+
+  <div class="nav-coins" id="navCoins"></div>
+
+  <div class="nav-right">
+    <div class="nav-status">
+      <span class="live-dot" id="liveDot"></span>
+      <span class="live-label" id="liveLabel">conectando...</span>
+    </div>
+    <button class="btn-logout" onclick="doLogout()" title="Cerrar sesión">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Salir</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ APP ════════════════════════════════════════════════ -->
+<main class="app-layout">
+
+  <section class="chart-section">
+    <div class="chart-header">
+      <div class="chart-title-group">
+        <div class="chart-coin-info">
+          <h1 class="chart-symbol" id="chartSymbol">BTC / USDT</h1>
+          <span class="chart-coin-name" id="chartCoinName">Bitcoin</span>
         </div>
-        <div class="chart-meta-group">
-          <div class="chart-meta-item">
-            <span class="meta-label">Máx 24h</span>
-            <span class="meta-val up" id="metaHigh">—</span>
-          </div>
-          <div class="chart-meta-item">
-            <span class="meta-label">Mín 24h</span>
-            <span class="meta-val down" id="metaLow">—</span>
-          </div>
-          <div class="chart-meta-item">
-            <span class="meta-label">Volumen</span>
-            <span class="meta-val" id="metaVol">—</span>
-          </div>
-          <div class="tf-selector" id="tfSelector">
-            <button class="tf-btn" data-tf="1m">1m</button>
-            <button class="tf-btn" data-tf="5m">5m</button>
-            <button class="tf-btn" data-tf="15m">15m</button>
-            <button class="tf-btn active" data-tf="1h">1h</button>
-            <button class="tf-btn" data-tf="4h">4h</button>
-            <button class="tf-btn" data-tf="1d">1D</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="chart-container" id="chartContainer"></div>
-
-      <div class="chart-footer">
-        <span class="footer-note">
-          <i class="bi bi-reception-4"></i>
-          Datos en tiempo real via Binance &middot; velas de <span id="footerTf">1h</span> &middot; últimas <span id="footerKlines">100</span> velas
-        </span>
-        <span class="footer-time" id="footerTime">—</span>
-      </div>
-    </section>
-
-    <!-- RIGHT: Signal Panel -->
-    <aside class="signal-section">
-
-      <div class="signal-button-wrap">
-        <div class="signal-button loading" id="signalButton">
-          <div class="signal-pulse" id="signalPulse"></div>
-          <div class="signal-direction-icon" id="signalDirIcon">
-            <i class="bi bi-arrow-repeat" id="signalBiIcon"></i>
-          </div>
-          <div class="signal-action" id="signalAction">ANALIZANDO</div>
-          <div class="signal-timing" id="signalTiming"></div>
-          <div class="signal-subtitle" id="signalSubtitle">Cargando datos del mercado...</div>
-          <div class="signal-updated" id="signalUpdated"></div>
-        </div>
-      </div>
-
-      <div class="levels-card" id="levelsCard">
-        <div class="levels-header">
-          <i class="bi bi-bullseye"></i>
-          Niveles clave de precio
-        </div>
-        <div class="level-row">
-          <div class="level-box tp-box">
-            <div class="level-label-top">
-              <i class="bi bi-arrow-up-circle-fill"></i>
-              Tomar ganancias
-            </div>
-            <div class="level-price" id="tpPrice">—</div>
-            <div class="level-pct" id="tpPct">—</div>
-            <div class="level-hint">Precio donde conviene salir con ganancias</div>
-          </div>
-          <div class="level-box sl-box">
-            <div class="level-label-top">
-              <i class="bi bi-shield-fill-x"></i>
-              Cortar pérdida
-            </div>
-            <div class="level-price" id="slPrice">—</div>
-            <div class="level-pct" id="slPct">—</div>
-            <div class="level-hint">Precio donde deberías salir para no perder más</div>
-          </div>
+        <div class="chart-price-group">
+          <span class="chart-price" id="chartPrice">—</span>
+          <span class="chart-change" id="chartChange">—</span>
         </div>
       </div>
-
-      <div class="confidence-card">
-        <div class="conf-header">
-          <span class="conf-title">
-            <i class="bi bi-bar-chart-line"></i>
-            Fiabilidad de la señal
-          </span>
-          <span class="conf-value" id="confValue">—</span>
+      <div class="chart-meta-group">
+        <div class="chart-meta-item">
+          <span class="meta-label">Máx 24h</span>
+          <span class="meta-val up" id="metaHigh">—</span>
         </div>
-        <div class="conf-bar-bg">
-          <div class="conf-bar-fill" id="confBar" style="width:0%"></div>
+        <div class="chart-meta-item">
+          <span class="meta-label">Mín 24h</span>
+          <span class="meta-val down" id="metaLow">—</span>
         </div>
-        <div class="conf-desc" id="confDesc">Calculando...</div>
-      </div>
-
-      <div class="indicators-card">
-        <div class="ind-title">
-          <i class="bi bi-activity"></i>
-          Por qué esta señal
+        <div class="chart-meta-item">
+          <span class="meta-label">Volumen</span>
+          <span class="meta-val" id="metaVol">—</span>
         </div>
-        <div class="indicators-list" id="indicatorsList"></div>
-      </div>
-
-      <div class="summary-card">
-        <div class="summary-title">
-          <i class="bi bi-calendar2-range"></i>
-          Resumen últimas 48 horas
-        </div>
-        <div class="summary-body" id="summaryBody">
-          <div class="summary-skeleton">Cargando análisis...</div>
+        <div class="tf-selector" id="tfSelector">
+          <button class="tf-btn" data-tf="1m">1m</button>
+          <button class="tf-btn" data-tf="5m">5m</button>
+          <button class="tf-btn" data-tf="15m">15m</button>
+          <button class="tf-btn active" data-tf="1h">1h</button>
+          <button class="tf-btn" data-tf="4h">4h</button>
+          <button class="tf-btn" data-tf="1d">1D</button>
         </div>
       </div>
+    </div>
 
-      <div class="session-card">
-        <div class="session-title">
-          <i class="bi bi-clock-history"></i>
-          Sesiones de mercado
+    <div class="chart-container" id="chartContainer"></div>
+
+    <div class="chart-footer">
+      <span class="footer-note">
+        <i class="bi bi-reception-4"></i>
+        Binance · velas de <span id="footerTf">1h</span> · <span id="footerKlines">100</span> velas
+      </span>
+      <span class="footer-time" id="footerTime">—</span>
+    </div>
+  </section>
+
+  <aside class="signal-section">
+
+    <div class="signal-button-wrap">
+      <div class="signal-button loading" id="signalButton">
+        <div class="signal-pulse" id="signalPulse"></div>
+        <div class="signal-direction-icon" id="signalDirIcon">
+          <i class="bi bi-arrow-repeat" id="signalBiIcon"></i>
         </div>
-        <div class="sessions-list" id="sessionsList"></div>
+        <div class="signal-action" id="signalAction">ANALIZANDO</div>
+        <div class="signal-timing" id="signalTiming"></div>
+        <div class="signal-subtitle" id="signalSubtitle">Cargando datos del mercado...</div>
+        <div class="signal-updated" id="signalUpdated"></div>
       </div>
+    </div>
 
-      <p class="disclaimer">
-        <i class="bi bi-exclamation-triangle"></i>
-        Esta herramienta es educativa. No es asesoramiento financiero. Nunca inviertas más de lo que puedas perder.
-      </p>
+    <div class="levels-card" id="levelsCard">
+      <div class="levels-header"><i class="bi bi-bullseye"></i> Niveles clave de precio</div>
+      <div class="level-row">
+        <div class="level-box tp-box">
+          <div class="level-label-top"><i class="bi bi-arrow-up-circle-fill"></i> Tomar ganancias</div>
+          <div class="level-price" id="tpPrice">—</div>
+          <div class="level-pct" id="tpPct">—</div>
+          <div class="level-hint">Precio donde conviene salir con ganancias</div>
+        </div>
+        <div class="level-box sl-box">
+          <div class="level-label-top"><i class="bi bi-shield-fill-x"></i> Cortar pérdida</div>
+          <div class="level-price" id="slPrice">—</div>
+          <div class="level-pct" id="slPct">—</div>
+          <div class="level-hint">Precio donde deberías salir para no perder más</div>
+        </div>
+      </div>
+    </div>
 
-    </aside>
-  </main>
+    <div class="confidence-card">
+      <div class="conf-header">
+        <span class="conf-title"><i class="bi bi-bar-chart-line"></i> Fiabilidad de la señal</span>
+        <span class="conf-value" id="confValue">—</span>
+      </div>
+      <div class="conf-bar-bg"><div class="conf-bar-fill" id="confBar" style="width:0%"></div></div>
+      <div class="conf-desc" id="confDesc">Calculando...</div>
+    </div>
 
-  <script src="./js/app.js"></script>
-  <script>
-    // Logout handler — adds to window after app.js defines SESSION_KEY
-    function doLogout() {
-      sessionStorage.removeItem(typeof SESSION_KEY !== 'undefined' ? SESSION_KEY : 'cs_auth');
-      location.reload();
-    }
-  </script>
+    <div class="indicators-card">
+      <div class="ind-title"><i class="bi bi-activity"></i> Por qué esta señal</div>
+      <div class="indicators-list" id="indicatorsList"></div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-title"><i class="bi bi-calendar2-range"></i> Resumen últimas 48 horas</div>
+      <div class="summary-body" id="summaryBody"><div class="summary-skeleton">Cargando análisis...</div></div>
+    </div>
+
+    <div class="session-card">
+      <div class="session-title"><i class="bi bi-clock-history"></i> Sesiones de mercado</div>
+      <div class="sessions-list" id="sessionsList"></div>
+    </div>
+
+    <p class="disclaimer">
+      <i class="bi bi-exclamation-triangle"></i>
+      Esta herramienta es educativa. No es asesoramiento financiero. Nunca inviertas más de lo que puedas perder.
+    </p>
+
+  </aside>
+</main>
+
+<script src="./js/app.js"></script>
+<script>
+  function doLogout() {
+    sessionStorage.removeItem(typeof SESSION_KEY !== 'undefined' ? SESSION_KEY : 'cs_auth');
+    location.reload();
+  }
+</script>
 </body>
 </html>

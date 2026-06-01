@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#07090e"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <title>CryptoSignal — Tu asistente de trading</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -12,21 +15,30 @@
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
+  <!-- ══ LOGIN ════════════════════════════════════════ -->
   <div class="login-overlay" id="loginOverlay">
     <div class="login-card">
-      <div class="login-brand">
+
+      <!-- Icon -->
+      <div class="login-icon-wrap">
         <i class="bi bi-graph-up-arrow"></i>
-        <span>CryptoSignal</span>
       </div>
-      <p class="login-subtitle">Ingresa tu clave para continuar</p>
+
+      <!-- Brand -->
+      <div class="login-brand">CryptoSignal</div>
+      <div class="login-tagline">Mercados · Análisis · Tiempo real</div>
+
+      <div class="login-divider"></div>
+
+      <!-- Field -->
+      <div class="login-field-label">Clave de acceso</div>
       <div class="login-field" id="loginField">
         <i class="bi bi-lock login-field-icon"></i>
         <input
           type="password"
           id="loginInput"
           class="login-input"
-          placeholder="Contrasena"
+          placeholder="Ingresa tu clave"
           autocomplete="current-password"
           maxlength="64"
         />
@@ -34,15 +46,27 @@
           <i class="bi bi-eye" id="loginEyeIcon"></i>
         </button>
       </div>
-      <div class="login-error" id="loginError">Clave incorrecta. Intentalo de nuevo.</div>
+
+      <div class="login-error" id="loginError">Clave incorrecta. Inténtalo de nuevo.</div>
+
       <button class="login-btn" id="loginBtn" type="button">
         <i class="bi bi-box-arrow-in-right"></i>
         Entrar
       </button>
+
+      <!-- Decorative dots -->
+      <div class="login-dots">
+        <div class="login-dot"></div>
+        <div class="login-dot"></div>
+        <div class="login-dot"></div>
+        <div class="login-dot"></div>
+        <div class="login-dot"></div>
+      </div>
+
     </div>
   </div>
 
-  <!-- NAVBAR -->
+  <!-- ══ NAVBAR ════════════════════════════════════════ -->
   <nav class="navbar">
     <div class="nav-brand">
       <i class="bi bi-graph-up-arrow brand-icon"></i>
@@ -58,10 +82,14 @@
         <span class="live-dot" id="liveDot"></span>
         <span class="live-label" id="liveLabel">conectando...</span>
       </div>
+      <button class="btn-logout" id="btnLogout" onclick="doLogout()" title="Cerrar sesión">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Salir</span>
+      </button>
     </div>
   </nav>
 
-  <!-- MAIN LAYOUT -->
+  <!-- ══ MAIN LAYOUT ════════════════════════════════════ -->
   <main class="app-layout">
 
     <!-- LEFT: Chart -->
@@ -90,7 +118,6 @@
             <span class="meta-label">Volumen</span>
             <span class="meta-val" id="metaVol">—</span>
           </div>
-          <!-- Timeframe selector -->
           <div class="tf-selector" id="tfSelector">
             <button class="tf-btn" data-tf="1m">1m</button>
             <button class="tf-btn" data-tf="5m">5m</button>
@@ -116,7 +143,6 @@
     <!-- RIGHT: Signal Panel -->
     <aside class="signal-section">
 
-      <!-- BIG SIGNAL BUTTON -->
       <div class="signal-button-wrap">
         <div class="signal-button loading" id="signalButton">
           <div class="signal-pulse" id="signalPulse"></div>
@@ -130,7 +156,6 @@
         </div>
       </div>
 
-      <!-- TP / SL -->
       <div class="levels-card" id="levelsCard">
         <div class="levels-header">
           <i class="bi bi-bullseye"></i>
@@ -158,7 +183,6 @@
         </div>
       </div>
 
-      <!-- CONFIDENCE -->
       <div class="confidence-card">
         <div class="conf-header">
           <span class="conf-title">
@@ -173,27 +197,24 @@
         <div class="conf-desc" id="confDesc">Calculando...</div>
       </div>
 
-      <!-- INDICATORS -->
       <div class="indicators-card">
         <div class="ind-title">
           <i class="bi bi-activity"></i>
-          Por que esta señal
+          Por qué esta señal
         </div>
         <div class="indicators-list" id="indicatorsList"></div>
       </div>
 
-      <!-- 48H SUMMARY -->
       <div class="summary-card">
         <div class="summary-title">
           <i class="bi bi-calendar2-range"></i>
-          Resumen ultimas 48 horas
+          Resumen últimas 48 horas
         </div>
         <div class="summary-body" id="summaryBody">
           <div class="summary-skeleton">Cargando análisis...</div>
         </div>
       </div>
 
-      <!-- MARKET SESSION -->
       <div class="session-card">
         <div class="session-title">
           <i class="bi bi-clock-history"></i>
@@ -202,7 +223,6 @@
         <div class="sessions-list" id="sessionsList"></div>
       </div>
 
-      <!-- DISCLAIMER -->
       <p class="disclaimer">
         <i class="bi bi-exclamation-triangle"></i>
         Esta herramienta es educativa. No es asesoramiento financiero. Nunca inviertas más de lo que puedas perder.
@@ -212,5 +232,12 @@
   </main>
 
   <script src="./js/app.js"></script>
+  <script>
+    // Logout handler — adds to window after app.js defines SESSION_KEY
+    function doLogout() {
+      sessionStorage.removeItem(typeof SESSION_KEY !== 'undefined' ? SESSION_KEY : 'cs_auth');
+      location.reload();
+    }
+  </script>
 </body>
 </html>

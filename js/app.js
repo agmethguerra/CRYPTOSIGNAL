@@ -23,6 +23,7 @@ function initLogin() {
   // Already authenticated this session
   if (sessionStorage.getItem(SESSION_KEY) === '1') {
     overlay.classList.add('hidden');
+    setTimeout(() => overlay.remove(), 0);
     return;
   }
 
@@ -43,7 +44,17 @@ function initLogin() {
       sessionStorage.setItem(SESSION_KEY, '1');
       overlay.classList.add('hidden');
       // Remove overlay from DOM after transition
-      setTimeout(() => overlay.remove(), 450);
+      setTimeout(() => {
+        overlay.remove();
+        // Force chart resize now that the container is fully visible
+        if (state.chart) {
+          const container = document.getElementById('chartContainer');
+          if (container) {
+            state.chart.resize(container.clientWidth, container.clientHeight);
+            state.chart.timeScale().fitContent();
+          }
+        }
+      }, 480);
     } else {
       errEl.classList.add('visible');
       field.classList.add('shake');

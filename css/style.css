@@ -339,6 +339,7 @@ html, body {
   height: calc(100vh - var(--nav-h));
   margin-top: var(--nav-h);
   overflow: hidden;
+  /* On mobile this becomes auto via media query */
 }
 
 /* ──────────────────────────────────────────────
@@ -962,12 +963,12 @@ html, body {
 .loading-overlay.hidden { opacity: 0; pointer-events: none; }
 
 /* ──────────────────────────────────────────────
-   RESPONSIVE
+   RESPONSIVE — TABLET
 ────────────────────────────────────────────── */
-@media (max-width: 940px) {
+@media (max-width: 960px) {
   .app-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: 50vh auto;
+    grid-template-rows: 48vh auto;
     height: auto;
     overflow: visible;
   }
@@ -976,13 +977,167 @@ html, body {
     border-bottom: 1px solid var(--border);
   }
   .signal-section { overflow: visible; }
-  .chart-meta-group { display: none; }
+  .chart-meta-group { flex-wrap: wrap; gap: 8px; }
 }
 
-@media (max-width: 540px) {
-  .navbar { padding: 0 12px; }
-  .nav-brand { margin-right: 10px; }
-  .chart-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .signal-section { padding: 10px 10px 16px; }
-  .chart-price { font-size: 18px; }
+/* ──────────────────────────────────────────────
+   RESPONSIVE — MOBILE
+────────────────────────────────────────────── */
+@media (max-width: 600px) {
+
+  /* Navbar: brand top-left, status top-right, coins row below */
+  :root { --nav-h: 96px; }
+
+  .navbar {
+    flex-wrap: wrap;
+    padding: 0;
+    height: var(--nav-h);
+    align-items: flex-start;
+  }
+
+  /* Top row: brand + status */
+  .nav-brand {
+    order: 1;
+    margin: 0;
+    padding: 10px 14px 0;
+    flex: 1;
+  }
+
+  .nav-right {
+    order: 2;
+    margin: 0;
+    padding: 10px 14px 0;
+    flex-shrink: 0;
+  }
+
+  /* Bottom row: coin pills full width */
+  .nav-coins {
+    order: 3;
+    width: 100%;
+    flex: none;
+    padding: 6px 10px 8px;
+    gap: 5px;
+    border-top: 1px solid var(--border);
+  }
+
+  .coin-pill {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  /* Hide live price on pill to save space — signal dot stays */
+  .coin-pill .coin-live-price { display: none; }
+
+  /* Chart section */
+  .chart-section {
+    height: 46vw;
+    min-height: 220px;
+    max-height: 320px;
+  }
+
+  .chart-header {
+    padding: 10px 12px 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .chart-title-group {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .chart-symbol { font-size: 16px; }
+  .chart-price  { font-size: 17px; }
+
+  .chart-meta-group {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+
+  /* Hide less-critical meta on very small screens */
+  .chart-meta-item:last-of-type { display: none; }
+
+  .tf-selector {
+    margin-left: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tf-selector::-webkit-scrollbar { display: none; }
+
+  .tf-btn { padding: 5px 10px; font-size: 11px; }
+
+  .chart-footer {
+    padding: 5px 12px;
+    font-size: 10px;
+    flex-wrap: wrap;
+    gap: 2px 8px;
+  }
+
+  /* Signal panel */
+  .signal-section {
+    padding: 12px 12px 24px;
+    gap: 10px;
+    /* Allow full scroll on mobile */
+    overflow: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .signal-button {
+    padding: 20px 14px 18px;
+  }
+
+  .signal-direction-icon { font-size: 28px; }
+  .signal-action         { font-size: 18px; }
+  .signal-timing         { font-size: 11.5px; }
+  .signal-subtitle       { font-size: 11px; }
+
+  /* Levels: keep 2 columns but smaller */
+  .level-box { padding: 10px; }
+  .level-price { font-size: 13px; }
+
+  /* Cards: full-width comfortable padding */
+  .confidence-card,
+  .indicators-card,
+  .summary-card,
+  .session-card,
+  .levels-card { padding: 12px; }
+
+  /* Indicators: allow text to wrap */
+  .ind-row {
+    grid-template-columns: 18px 1fr auto;
+    gap: 6px;
+    padding: 7px 7px;
+    align-items: flex-start;
+  }
+  .ind-text { font-size: 11px; line-height: 1.45; }
+  .ind-icon { margin-top: 1px; }
+
+  .stat-row  { font-size: 11px; }
+  .conf-desc { font-size: 10.5px; }
+
+  /* Sessions */
+  .session-row { flex-wrap: wrap; gap: 3px 8px; padding: 7px 8px; }
+  .session-hours { order: 3; width: 100%; font-size: 10px; }
+
+  /* Login card */
+  .login-card {
+    margin: 16px;
+    padding: 32px 24px 28px;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   RESPONSIVE — SMALL PHONE (< 380px)
+────────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .chart-symbol { font-size: 14px; }
+  .chart-price  { font-size: 15px; }
+  .coin-pill    { padding: 5px 8px; font-size: 11.5px; }
+  .level-row    { grid-template-columns: 1fr; }
+  .signal-action { font-size: 16px; letter-spacing: 1.5px; }
 }

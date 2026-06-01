@@ -541,19 +541,32 @@ function initChart() {
 
   if (state.chart) { try { state.chart.remove(); } catch {} }
 
+  const isMobile = window.innerWidth <= 600;
+
   state.chart = LightweightCharts.createChart(container, {
     width:  container.clientWidth,
     height: container.clientHeight,
     layout: { background: { color: '#07090e' }, textColor: '#5e708a' },
     grid:   { vertLines: { color: '#101520' }, horzLines: { color: '#101520' } },
     crosshair: {
+      mode:     isMobile ? 1 : 0,
       vertLine: { color: '#4d78d440' },
       horzLine: { color: '#4d78d440' },
     },
-    rightPriceScale: { borderColor: '#1a2235' },
-    timeScale:       { borderColor: '#1a2235', timeVisible: true, secondsVisible: false },
-    handleScale:  { mouseWheel: true, pinch: true },
-    handleScroll: true,
+    rightPriceScale: {
+      borderColor: '#1a2235',
+      scaleMargins: { top: 0.08, bottom: 0.08 },
+    },
+    timeScale: {
+      borderColor:     '#1a2235',
+      timeVisible:     true,
+      secondsVisible:  false,
+      fixLeftEdge:     false,
+      fixRightEdge:    false,
+      lockVisibleTimeRangeOnResize: true,
+    },
+    handleScale:  { mouseWheel: true, pinch: true, axisPressedMouseMove: true },
+    handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
   });
 
   state.candleSeries = state.chart.addCandlestickSeries({
@@ -567,18 +580,18 @@ function initChart() {
 
   // EMA9 line
   state.ema9Series = state.chart.addLineSeries({
-    color:       '#f5a62390',
-    lineWidth:   1,
-    lineStyle:   0,
+    color:            '#f5a62390',
+    lineWidth:        1,
+    lineStyle:        0,
     priceLineVisible: false,
     lastValueVisible: false,
   });
 
   // EMA21 line
   state.ema21Series = state.chart.addLineSeries({
-    color:       '#4d78d490',
-    lineWidth:   1,
-    lineStyle:   0,
+    color:            '#4d78d490',
+    lineWidth:        1,
+    lineStyle:        0,
     priceLineVisible: false,
     lastValueVisible: false,
   });
